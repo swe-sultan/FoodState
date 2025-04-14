@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" href="favicon.ico">
+
+    <style>
+      * {
+    font-family: 'Poppins', sans-serif;
+  }
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: url("fslkjeiorjwnmdlcmbvdlkaerwfgbdfdfgw.webp") no-repeat
+          center center fixed;
+        background-size: cover;
+      }
+      .container {
+        background-color: rgba(
+          37,
+          92,
+          11,
+          0.9
+        ); /* Semi-transparent green background */
+        padding: 60px;
+        border-radius: 30px;
+        border: 2px solid #000000;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 600px;
+        width: 90%;
+      }
+      .button,
+      .fetch-btn,
+      .next-btn {
+        background: #2d2e2d;
+        color: rgb(255, 255, 255);
+        padding: 25px 50px;
+        border: none;
+        border-radius: 50px;
+        font-size: 24px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        margin: 10px 0;
+      }
+      .button:hover {
+        transform: scale(1.1);
+        background: #013013;
+      }
+      .fetch-btn:hover {
+        transform: scale(1.1);
+        background: #013013;
+      }
+      .next-btn:hover {
+        transform: scale(1.1);
+        background: #013013;
+      }
+      .title {
+        font-size: 54px;
+        color: #f0f0f0;
+        margin-bottom: 50px;
+      }
+      #food-input {
+        display: block;
+        margin: 30px auto;
+        padding: 20px;
+        border: 2px solid #4a90e2;
+        border-radius: 50px;
+        font-size: 24px;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+      }
+      #uploaded-image {
+        margin-top: 30px;
+        max-width: 400px;
+        border-radius: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+      .info {
+        font-size: 24px;
+        color: #333;
+      }
+      .logo-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+      }
+      .logo {
+        width: 150px; /* Default size for phones */
+      }
+      @media (min-width: 1024px) {
+        .logo {
+          width: 280px; /* Size for laptops */
+        }
+        .container {
+          padding: 60px; /* Default padding for larger screens */
+        }
+      }
+      @media (max-width: 767px) {
+        .container {
+          padding: 30px; /* Smaller padding for phone screens */
+        }
+        .title {
+          font-size: 36px; /* Smaller title font size for phone screens */
+        }
+        .button,
+        .fetch-btn,
+        .next-btn {
+          padding: 15px 30px; /* Smaller button size for phone screens */
+          font-size: 18px; /* Smaller button font size for phone screens */
+        }
+      }
+
+      .about-container {
+  position: absolute;
+  top: 10px;
+  right: 7px;
+}
+
+.about-link {
+  font-size: 18px;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 20px;
+  opacity: 0.3;
+  transition: background-color 0.3s;
+}
+
+.about-link:hover {
+  color: #013013;
+}
+    </style>
+    <link rel="stylesheet" href="tailwind.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About</title>
+</head>
+<body>
+  <div class="logo-container">
+    <a href="index.html">
+      <img
+        src="kdjlfnfjwfwioutebncvbdfdkjhfsfwefepokfd.webp"
+        alt="Logo"
+        class="logo"
+    /></a>
+  </div>
+  <div class="about-container">
+    <a href="about.html" class="about-link">About</a>
+  </div>
+  
+  <span style="color:antiquewhite; font: bold;">Sultan AlMalki</span>
+  <span>
+    <a href="https://www.linkedin.com/in/sultan-almalki-963a7a2ab/" target="_blank">LinkedIn</a>
+  </span>
+  <br>
+  
+  <span style="color:antiquewhite; font: bold;">Nawaf Alageel</span>
+  <span>
+    <a href="https://www.linkedin.com/in/nawaf-alageel-794462312/" target="_blank">LinkedIn</a>
+  </span>
+  
+</body>
+</html>

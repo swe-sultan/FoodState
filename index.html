@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Food Detection</title>
+    <link rel="stylesheet" href="tailwind.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="icon" href="favicon.ico">
+
+    <style>
+      * {
+        font-family: 'Poppins', sans-serif;
+      }
+      body,
+      html {
+        height: 100%;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background: url("fslkjeiorjwnmdlcmbvdlkaerwfgbdfdfgw.webp") no-repeat
+          center center fixed;
+        background-size: cover;
+      }
+      .about-link {
+  font-size: 18px;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 20px;
+  opacity: 0.3;
+  transition: background-color 0.3s;
+}
+
+.about-link:hover {
+  color: #013013;
+}
+      .container {
+        background-color: rgba(
+          37,
+          92,
+          11,
+          0.9
+        ); /* Semi-transparent green background */
+        padding: 60px;
+        border-radius: 30px;
+        border: 2px solid #000000;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 600px;
+        width: 90%;
+      }
+      .button,
+      .fetch-btn,
+      .next-btn {
+        background: #2d2e2d;
+        color: rgb(255, 255, 255);
+        padding: 25px 50px;
+        border: none;
+        border-radius: 50px;
+        font-size: 24px;
+        cursor: pointer;
+        transition: transform 0.3s;
+        margin: 10px 0;
+      }
+      .button:hover {
+        transform: scale(1.1);
+        background: #013013;
+      }
+      .fetch-btn:hover {
+        transform: scale(1.1);
+        background: #013013;
+      }
+      .next-btn:hover {
+        transform: scale(1.1);
+        background: #013013;
+      }
+      .about-container {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+      .title {
+        font-size: 54px;
+        color: #f0f0f0;
+        margin-bottom: 50px;
+      }
+      #food-input {
+        display: block;
+        margin: 30px auto;
+        padding: 20px;
+        border: 2px solid #4a90e2;
+        border-radius: 50px;
+        font-size: 24px;
+        width: 80%;
+        max-width: 500px;
+        text-align: center;
+      }
+      #uploaded-image {
+        margin-top: 30px;
+        max-width: 400px;
+        border-radius: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+      }
+      .info {
+        font-size: 24px;
+        color: #333;
+      }
+      .logo-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+      }
+      .logo {
+        width: 150px; /* Default size for phones */
+      }
+      @media (min-width: 1024px) {
+        .logo {
+          width: 280px; /* Size for laptops */
+        }
+        .container {
+          padding: 60px; /* Default padding for larger screens */
+        }
+      }
+      @media (max-width: 767px) {
+        .container {
+          padding: 30px; /* Smaller padding for phone screens */
+        }
+        .title {
+          font-size: 36px; /* Smaller title font size for phone screens */
+        }
+        .button,
+        .fetch-btn,
+        .next-btn {
+          padding: 15px 30px; /* Smaller button size for phone screens */
+          font-size: 18px; /* Smaller button font size for phone screens */
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="about-container">
+      <a href="about.html" class="about-link">About</a>
+    </div>
+    
+    <div class="logo-container">
+      <img loading="lazy"
+      src="kdjlfnfjwfwioutebncvbdfdkjhfsfwefepokfd.webp"
+      alt="Logo"
+      class="logo"
+      width="280"
+      height="280"
+    />
+      </a>
+    </div>
+    <div class="container text-center" id="choice-container">
+      <div class="title">Choose an action</div>
+      <button class="button" onclick="showWriteOption()">Write</button>
+      <button class="button" onclick="showPhotoOption()">Take a Photo</button>
+    </div>
+
+    <div
+      class="container text-center"
+      id="write-container"
+      style="display: none"
+    >
+      <div class="title">Food</div>
+      <input type="text" id="food-input" placeholder="Enter food item" />
+      <button id="next-btn" class="next-btn" onclick="goToNextPageWithText();">
+        Display Information
+      </button>
+    </div>
+
+    <div
+      class="container text-center"
+      id="photo-container"
+      style="display: none"
+    >
+      <div class="title">Food</div>
+      <button
+        class="button"
+        onclick="document.getElementById('file-input').click();"
+      >
+        Upload Image
+      </button>
+
+      <input
+        type="file"
+        id="file-input"
+        style="display: none"
+        onchange="displayAndUploadImage(this)"
+      />
+      <div id="image-container"></div>
+      <button class="button" id="fetch-btn" onclick="fetchResults()">
+        Show the Result
+      </button>
+      
+      <div id="results"></div>
+    </div>
+
+    <div
+      class="container text-center"
+      id="info-container"
+      style="display: none"
+    >
+      <div class="title">Food Information</div>
+      <div class="info" id="food-info"></div>
+    </div>
+
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.766.0.min.js"></script>
+    <script>
+      AWS.config.region = "ap-south-1";
+      AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: "ap-south-1:5d45b92a-7a79-4a70-89bc-f2da0c9f0efd",
+      });
+
+      var s3 = new AWS.S3({
+        apiVersion: "2006-03-01",
+        params: { Bucket: "foodstate.net" },
+      });
+
+      var lambda = new AWS.Lambda({
+        region: "ap-south-1",
+      });
+
+      var uploadedFileName = "";
+
+      function showWriteOption() {
+        document.getElementById("choice-container").style.display = "none";
+        document.getElementById("write-container").style.display = "block";
+      }
+
+      function showPhotoOption() {
+        document.getElementById("choice-container").style.display = "none";
+        document.getElementById("photo-container").style.display = "block";
+      }
+
+      function showFoodInfo() {
+        const foodItem = document.getElementById("food-input").value;
+        localStorage.setItem("foodItem", foodItem);
+        document.getElementById("write-container").style.display = "none";
+        document.getElementById("info-container").style.display = "block";
+        document.getElementById("food-info").textContent =
+          "You entered: " + foodItem;
+        goToNextPageWithText();
+      }
+
+      function displayAndUploadImage(input) {
+        //******
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var imageContainer = document.getElementById("image-container");
+            var img = document.createElement("img");
+            img.id = "uploaded-image";
+            img.src = e.target.result;
+            imageContainer.innerHTML = "";
+            imageContainer.appendChild(img);
+
+            var nextButton = document.getElementById("next-btn");
+            nextButton.style.display = "inline-block";
+
+            // Upload the image to S3
+            uploadToS3(input.files[0]);
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      function displayAndUploadImage(input) {
+        //******
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+          reader.onload = function (e) {
+            var imageContainer = document.getElementById("image-container");
+            var img = document.createElement("img");
+            img.id = "uploaded-image";
+            img.src = e.target.result;
+            imageContainer.innerHTML = "";
+            imageContainer.appendChild(img);
+
+            var nextButton = document.getElementById("next-btn");
+            nextButton.style.display = "inline-block";
+
+            // Upload the image to S3
+            uploadToS3(input.files[0]);
+          };
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
+
+      function uploadToS3(file) {
+        //******
+        var fileName = file.name;
+        uploadedFileName = fileName;
+        var albumPhotosKey = encodeURIComponent(fileName);
+
+        var upload = new AWS.S3.ManagedUpload({
+          params: {
+            Bucket: "foodstate.net",
+            Key: albumPhotosKey,
+            Body: file,
+          },
+        });
+
+        var promise = upload.promise();
+
+        promise.then(
+          function (data) {
+            console.log("Successfully uploaded photo.");
+            // Invoke the Lambda function after successful upload
+            invokeLambdaFunction(fileName);
+          },
+          function (err) {
+            console.error(
+              "There was an error uploading your photo:",
+              err.message
+            );
+            alert("There was an error uploading your photo: " + err.message);
+          }
+        );
+      }
+
+      function invokeLambdaFunction(fileName) {
+        //******
+        var params = {
+          FunctionName: "foodtest2",
+          InvocationType: "RequestResponse",
+          LogType: "Tail",
+          Payload: JSON.stringify({ fileName: fileName }),
+        };
+
+        lambda.invoke(params, function (err, data) {
+          if (err) {
+            console.error(
+              "There was an error invoking the Lambda function:",
+              err.message
+            );
+            alert(
+              "There was an error invoking the Lambda function: " + err.message
+            );
+          } else {
+            console.log("Lambda function response:", data);
+            document.getElementById("fetch-btn").style.display = "inline-block"; // Show the fetch button after Lambda execution
+          }
+        });
+      }
+
+      function fetchResults() {
+  // Remove the file extension (.jpg, .png, etc.)
+  var baseName = uploadedFileName.split(".")[0];
+
+  // Build CloudFront-safe URL for the .json file
+  var url = `${window.location.origin}/results/${baseName}.json`;
+
+  console.log("Fetching results from URL:", url);
+
+  fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error("Network response was not ok " + response.statusText);
+      }
+      return response.json();
+    })
+    .then((data) => {
+      console.log("✅ Detected labels from JSON:", data);
+
+      var resultsDiv = document.getElementById("results");
+      resultsDiv.textContent = "Detected Food Item: " + data[0];
+
+      // Fill the hidden input with the food name
+      document.getElementById("food-input").value = data[0];
+
+      // Proceed to next page
+      goToNextPageWithText();
+    })
+    .catch((error) => {
+      console.error("❌ There was an error fetching the results:", error);
+      alert("There was an error fetching the results: " + error.message);
+    });
+
+  function goToNextPageWithText() {
+    const foodItem = document.getElementById("food-input").value;
+    localStorage.setItem("foodItem", foodItem);
+    window.location.href = "info.html";
+  }
+}
+
+
+      
+      function sendToApiGateway(foodItem) {
+        //******new
+        fetch(
+          "https://v3b48sint1.execute-api.ap-south-1.amazonaws.com/dev/get-food-info",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ foodItem: foodItem }),
+          }
+        )
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error(
+                "Network response was not ok " + response.statusText
+              );
+            }
+            return response.json();
+          })
+          .then((data) => {
+            var resultsDiv = document.getElementById("results");
+            resultsDiv.textContent =
+              "OpenAI Response: " + data.choices[0].message.content;
+          })
+          .catch((error) => {
+            console.error(
+              "There was an error sending the food item to API Gateway:",
+              error
+            );
+            alert(
+              "There was an error sending the food item to API Gateway: " +
+                error.message
+            );
+          });
+      }
+
+      function goToNextPageWithText() {
+        //********new
+        const foodItem = document.getElementById("food-input").value;
+        localStorage.setItem("foodItem", foodItem);
+        window.location.href = "info.html";
+      }
+    </script>
+        <script
+        type="text/javascript"
+        src="https://me.kis.v2.scr.kaspersky-labs.com/FD126C42-EBFA-4E12-B309-BB3FDD723AC1/main.js?attr=qVMzVrM4IevlavFY3TwsXLakFLK6s5mf4M1qwboOMCN1NKdIO8MxKR_gqeRXiMGfAySvanGWRrPaWD_SswMdQr8nC-RCZKklWDEt3LsAWS8vA9xAAxo2LCjEwCGR1MbS0ZSsvQEoIOW7Z8aCb54BWHJTQPfTP_5AxlGWyoUHORrmncPo0idNmyLsr2uEdZ3KY_p_xEtu6J1DGVl0s0Tgq5YvJHmFH21gTEOZLJ1nTa6bPJgBJ7LruyJXXG8-BkmiFUJCqQBOrAOFHI79N9L_5efmlnQjewkYev8gU2cd9jZM_7eqaB3vpAFGWjtNqCxDoxc9pGD40PlJ2dRiw9IpY-BErABb-baFFrRr0cdd8nuybS6_QvfwlMu86JvZlPXAAeX4z7oEJsq-cJpFDPbVrN8Z27_puSbK5P0tSH6d0NhFCE4F7s0Z1U32ziAr9YfI6pMOiRYky0lS_bgkSyqRUjkxib-zYXq_igEWk3JR4gHFvdMy0siRpkDv7ohfMO8aZtUJ9_vX1qr24aQGOOPR1k6EjwuwRc-ymkOrUsJhhO1gbgoE3b-PQUHPuydOJ34RJwbgIfbqp27xSs61WArYWiyCQcGAmZVKnjXk55D0eYjK9_pR6lH3zkLUBBYw8xhb96gEX9Bhl3K5GnNEmKOG3j6WUtVFQbkOWERVUNnppxlWf5cM4VKcf6guCDRLq8EPj1FNcqijfzBTZoMJCdkW1m2L95nF6DrEcU6dYwBodX4ifN6worl5d_MMVbLBiJ9IYPv18gDlXHbVe3zDkLSZ7om-1XbEuF5s9isLQSPDzotwtFTcGsPh566l-r8goJdE3UxAYf3PU2o-9pIdU2NR8ty4GGUsbvRnKUW_GA_qDT2mZQC0VKS6K1usTCdBRiYUG9MuUgi3sIX3qY-W8_zDIrLDyb_HcJBHTA6mg6OxVVjeyXQh98CydVEGwi-fpShnt8iQEE5LdqCFPgx6jMfCDATLR1Sox3flhaeXJQWD2XRK78e9cDZ77Z-lhbqXbxxB8JRxP0zqtlF7NptGKTPoaV9suJzkUQpXC-oHT9_0dTG7Bm6RausN5ax4TVzJCy4hPMTm_0BGWrJPalVCMkFFLXEEXghJOzCWkCEAaafVJB0vVDpQlK0eVVV1vDBG0c2Ek66s-bPx3esAcaBGYtEkL8NYw6qovuDkNb0I2LHrl28_rGYnllX8gRzcy79oNoRIxBplooJZHseXKSiIQqop7Hb5oIMOthOMPbpeBs4VwhQlLaetm28t5jilugNwZoTSke0Gs3Qd-xENNWV_T0sQHVWBx24zn_NQzb8bW8U_2fA_OHR7xwVtC7kQbaez9Ur1lfjmUFc4zcUuEngCHHja1N7nLhxQZXb5r1jqHk91toRaHfzCm0lK8SJFRj5-DgwZGDw2S5CVIk1QAOUgnHAR1rZNbNPvHcoby1quJs1_7v1nKxYTjvmG4OvxdSZAi9P4wmip_RjmFtrtELHawWZ3kDNInw7kzqWEG-FyP0tpV7u2T-GTDIdzQRslxBs-wk8gwUh92wVcg-e99k3GR1UZrpwECF40_Jy7iOb18MUWtyZHSvFH5MWaZuMsDqTvGtUEKMDOAH9XRoOPIXwcH7-xxfb78P7B_VWYQgHf40DOXl1uG95Kj3PMiAYmpP8FO5Wt8ENHx_vHWY3diSJyutHDP8oxcWa1qpSP1aT3xTn2M-GMVCGLYZMHwoTddZS5KYCyaut2-Drm1SZr2yyQOvNvu0pUP1fYe0EvPbnbJQ9EtkNO5cmTnIzTLCTz2Om-kl-C1bjs663G63-XZj5wUj8wxkiz3MquEUB3Ry2bEBBfKA4UhpgSbE8FqFPf8Cso7FlNHYgiILgzE0_bA9TXhgCOLK7O_KUX7FYGB_RCw6z68Y-FR0BTsPAJMMzi4VMofxJFJP5lbB4m9bCiy5eb7dJp8HcCYRRJzxkrXQlHB3PxeaGi6D5JP35iikRrvAPU-THLpediwetzpLMdW-P9xAY1k3jFeKuHBTpBmi0uY9ajvar8SRqRy4hLn94cN7AhObKkEf9RFa7ST7JH5OKgUFbF-5q2JvXqz1ORVXYyiVUy0rPwMwGORz8p39c-xQtX5jhC"
+        charset="UTF-8"
+      ></script>
+  </body>
+</html>
